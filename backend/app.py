@@ -1,3 +1,5 @@
+import os
+import json
 import csv
 import os
 import gspread
@@ -95,10 +97,13 @@ def get_user_state(user_id):
 
 def save_order_to_sheets(order_data):
 
+    creds_json = os.environ["GOOGLE_CREDENTIALS"]
+    creds_dict = json.loads(creds_json)
+
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
-    creds = Credentials.from_service_account_file(
-        "credentials.json",
+    creds = Credentials.from_service_account_info(
+        creds_dict,
         scopes=scopes
     )
 
@@ -106,8 +111,10 @@ def save_order_to_sheets(order_data):
 
     sheet = client.open("Pedidos Floristería").sheet1
 
+    fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     row = [
-        order_data["timestamp"],
+        fecha_hora_actual,
         order_data["name"],
         order_data["selected_product"],
         order_data["occasion"],
