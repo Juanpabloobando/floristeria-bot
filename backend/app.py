@@ -110,8 +110,8 @@ def save_order_to_sheets(order_data):
 
     client = gspread.authorize(creds)
 
-    sheet = client.open_by_url(
-        "https://docs.google.com/spreadsheets/d/1TWOTsQgnX0GSIARj4eITNYwmcOeaKwic5U1RyjJ_-k/edit?gid=0#gid=0"
+    sheet = client.open_by_key(
+        "1TWOTsQcgnX0GSlARj4eITNYwmcOeaKwic5U1RyjJ_-k"
     ).sheet1
 
     fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
