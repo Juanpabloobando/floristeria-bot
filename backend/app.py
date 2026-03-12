@@ -99,6 +99,8 @@ def save_order_to_sheets(order_data):
     creds_json = os.environ["GOOGLE_CREDENTIALS"]
     creds_dict = json.loads(creds_json)
 
+    print("CLIENT EMAIL:", creds_dict.get("client_email"))
+
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
     creds = Credentials.from_service_account_info(
@@ -108,7 +110,9 @@ def save_order_to_sheets(order_data):
 
     client = gspread.authorize(creds)
 
-    sheet = client.open_by_key("1TWOTsQgnX0GSIARj4eITNYwmcOeaKwic5U1RyjJ_-k").sheet1
+    sheet = client.open_by_url(
+        "https://docs.google.com/spreadsheets/d/1TWOTsQgnX0GSIARj4eITNYwmcOeaKwic5U1RyjJ_-k/edit?gid=0#gid=0"
+    ).sheet1
 
     fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
