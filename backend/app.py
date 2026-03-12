@@ -1,5 +1,7 @@
 import csv
 import os
+import gspread
+from google.oauth2.service_account import Credentials
 from datetime import datetime
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -90,6 +92,33 @@ def get_user_state(user_id):
             "card_message": ""
         }
     return user_states[user_id]
+
+def save_order_to_sheets(order_data):
+
+    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+
+    creds = Credentials.from_service_account_file(
+        "credentials.json",
+        scopes=scopes
+    )
+
+    client = gspread.authorize(creds)
+
+    sheet = client.open("Pedidos Floristería").sheet1
+
+    row = [
+        order_data["timestamp"],
+        order_data["name"],
+        order_data["selected_product"],
+        order_data["occasion"],
+        order_data["budget"],
+        order_data["phone"],
+        order_data["address"],
+        order_data["delivery_date"],
+        order_data["card_message"]
+    ]
+
+    sheet.append_row(row)
 
 @app.get("/")
 def home():
@@ -241,6 +270,7 @@ def chat(message: Message):
         conversation_state["step"] = "finished"
 
         save_order_to_csv(conversation_state)
+        save_order_to_sheets(conversation_state)
 
         return {
             "response": (
